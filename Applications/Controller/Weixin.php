@@ -80,16 +80,20 @@ class Weixin extends Base {
         if(false === $ret) {
           return 1101;
         }
-        $data['memberId'] = $ret;
-        $token = Helper::encodeUserToken($data['memberId'], 'member');
+        $data['member_id'] = $ret;
       } else {
         //用户首次登录未写入信息，再次授权弹出信息框
         return 1102;
       }
     } else {
-      $token = Helper::encodeUserToken($member['id'], 'member');
+      $data['member_id'] = $member['id'];
     }
+    $token = Helper::encodeUserToken($data['member_id'], 'member');
     //缓存access_token
+    $ret = $this->mysql->query("update members set token = ? where id = ?", [$token, $data['member_id']]);
+    if(false === $ret) {
+      return -1;
+    }
     $key = $data['openid'];
     $this->redis->RedisCommands('hMset', $key, $data);
     $this->redis->RedisCommands('Expire', $key, $data['expires_in']);

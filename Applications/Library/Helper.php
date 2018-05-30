@@ -177,6 +177,8 @@ class Helper
 	 * @return [type]       [description]
 	 */
 	public static function httpRequest($url, $data = array(), $header = null, $ssl = false, $timeout = 60) {
+		self::logger('HttpRequest:', $url);
+		self::logger('HttpRequest:', $data);
 		$ch = curl_init();
 		/*相对路径转换*/
 		if ('http' != substr($url, 0, 4)) {
@@ -218,6 +220,7 @@ class Helper
 			$error = curl_error($ch);
 		}
 		curl_close($ch);
+		self::logger('HttpRequest:', $result);
 		return $result;
 	}
 
@@ -272,6 +275,40 @@ class Helper
 			$dec = bcadd(bcmul(bcpow($from, $len - $i - 1), $pos), $dec);
 		}
 		return $dec;
+	}
+
+	/**
+	 * [xml_encode description]
+	 * @param  [type] $arr [description]
+	 * @return [type]      [description]
+	 */
+	public static function xml_encode($arr) {
+		if (!is_array($arr)) {
+			return false;
+		}
+		$xml = "<xml>";
+		foreach ($arr as $key => $val) {
+			if (is_numeric($val)) {
+				$xml .= "<{$key}>{$val}</{$key}>";
+			} else {
+				$xml .= "<{$key}><![CDATA[{$val}]]></{$key}>";
+			}
+		}
+		$xml .= "</xml>";
+		return $xml;
+	}
+
+	/**
+	 * [xml_decode description]
+	 * @param  [type] $xml [description]
+	 * @return [type]      [description]
+	 */
+	public static function xml_decode($xml) {
+		if (empty($xml)) {
+			return false;
+		}
+		libxml_disable_entity_loader(true);
+		return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 	}
 }
 

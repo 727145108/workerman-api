@@ -24,7 +24,7 @@ class Base extends Controller {
    */
   public function ValidateLogin($token) {
     $memberId = Helper::decodeUserToken($token);
-    $fields = ['id', 'token', 'nickname', 'avatar', 'email', 'mobile', 'level', 'point', 'pushClientId', 'deviceToken', 'state', 'registerTime', 'updateVersion'];
+    $fields = ['id', 'token', 'nickname', 'avatar', 'email', 'mobile', 'openId', 'level', 'point', 'pushClientId', 'deviceToken', 'state', 'registerTime', 'updateVersion'];
     //$this->redis->RedisCommands('del', 'user:'.$userId);
     $member = $this->redis->RedisCommands('hGetAll', 'member:'.$memberId);
     if (count($member) < count($fields)) {
@@ -38,6 +38,7 @@ class Base extends Controller {
     }
     //验证token是否过期
     if($token != $member['token']) {
+      $this->redis->RedisCommands('setTimeout', "member:{$member['id']}", 1);
       return false;
     }
     return $member;
