@@ -69,7 +69,7 @@ class Pay extends Base {
       'out_trade_no'  => $order['order_sn'],
       'total_fee'     => $order['order_amount'],
       'spbill_create_ip'  => $_SERVER['REMOTE_ADDR'],
-      'notify_url'    => '',
+      'notify_url'    => $this->config['wxfwh']['notify_url'],
       'trade_type'    => 'JSAPI',
     );
     $params['sign'] = $this->wxMakeSign($params);
@@ -83,7 +83,7 @@ class Pay extends Base {
   	}
   	/*验证签名*/
   	if (isset($result['sign']) && $result['sign'] != $this->wxMakeSign($result)) {
-  		return false;
+  		//return false;
   	}
     $prePayParams = array(
   		'appId'     => $result['appid'],
@@ -96,6 +96,11 @@ class Pay extends Base {
   	return $prePayParams;
   }
 
+  /**
+   * 签名算法
+   * @param  [type] $data [description]
+   * @return [type]       [description]
+   */
   private function wxMakeSign($data) {
   	//去除原签名字段
   	unset($data['sign']);

@@ -21,7 +21,6 @@ class Home extends Base {
    */
   public function index($request, &$response) {
     Helper::ValidateParams([
-      'token' => '/^[a-zA-Z0-9|]{32}$/',
     ], $request, $response);
 
     $response['data'] = [

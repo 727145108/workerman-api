@@ -35,7 +35,7 @@ class Cart extends Base {
       'coupon' => [],
       'payments' => [], //支付方式 {default: 1, title: '微信支付', id: 1, description: '描述', promotion: []}
       'good_price' => 0,
-      'freight' => 1000, //运费
+      'freight' => 0, //运费
       'tax_price' => 0,
     ];
     foreach ($entities as $key => $item) {
@@ -60,9 +60,6 @@ class Cart extends Base {
     $carts['payments'] = [
       [
         'id' => 1, 'type' => 'wxpay', 'title' => '微信支付', 'description' => '微信快捷支付', 'default' => true, 'promotion' => []
-      ],
-      [
-        'id' => 2, 'type' => 'alipay', 'title' => '支付宝', 'description' => '支付宝快捷支付', 'default' => false, 'promotion' => []
       ]
     ];
 
@@ -85,8 +82,6 @@ class Cart extends Base {
     if(!isset($entities)) {
       return 1004;
     }
-
-    sleep(2);
 
     $member = $this->ValidateLogin($token);
     if(false === $member) {
@@ -152,7 +147,7 @@ class Cart extends Base {
       return 1400;
     }
     $this->mysql->commitTrans();
-    $response['data'] = ['order_id' => $order_id, 'payment' => $payment];
+    $response['data'] = ['order_id' => $order_id];
     return 0;
   }
 

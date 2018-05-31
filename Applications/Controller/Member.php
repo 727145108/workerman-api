@@ -51,7 +51,15 @@ class Member extends Base {
     Helper::ValidateParams([
       'token' => '/^[a-zA-Z0-9|]{32}$/'
     ], $request, $response);
+    extract($request);
+    $member = $this->ValidateLogin($token);
+    if(false === $member) {
+      return 1100;
+    }
+    //获取订单数量信息
     
+    $response['data'] = ['member' => $member];
+    return 0;
   }
 
 }

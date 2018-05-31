@@ -19,6 +19,7 @@ $config = [
     'app_secret'  => 'b99aa4913f96997269ee3f6dcbb52a39',
     'mch_id'      => '1434786802',
     'key'         => '3e72281acf19f73aa4f22b0b310404f3',
+    'notify_url'  => '',
   ],
 
   'util'     => [

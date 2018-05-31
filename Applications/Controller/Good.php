@@ -20,7 +20,6 @@ class Good extends Base {
    */
   public function index($request, &$response) {
     Helper::ValidateParams([
-      'token' => '/^[a-zA-Z0-9|]{32}$/',
       'page'  => '/^\d+$/',
       'limit' => '/^\d+$/',
       'q'  => '/^$|^[a-zA-Z0-9\x{4e00}-\x{9fa5}]+$/u',
@@ -32,7 +31,6 @@ class Good extends Base {
       $where[''] = ['like', "%{$q}%"];
     }
     $stmt = $this->mysql->build($where, 'and ');
-    $total = $this->mysql->query("select count(*) as total from goods where {$stmt['sqlPrepare']}", $stmt['bindParams'], true);
     $offset = ($page - 1) * $limit;
     $goods = $this->mysql->query("select id, good_title, short_title, good_pic, good_tag, good_price, good_tax, good_trade_type from goods where {$stmt['sqlPrepare']} limit ?, ?", array_merge($stmt['bindParams'], [$offset, $limit]));
     if(false === $goods) {
@@ -41,8 +39,7 @@ class Good extends Base {
     foreach ($goods as $key => &$good) {
       $good['good_tag'] = explode(',', $good['good_tag']);
     }
-    $total_page = ceil($total['total'] / $limit);
-    $response['data'] = ['items' => $goods, 'total' => $total['total'], 'total_page' => $total_page];
+    $response['data'] = ['items' => $goods];
     return 0;
   }
 
