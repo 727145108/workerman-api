@@ -57,8 +57,11 @@ class Member extends Base {
       return 1100;
     }
     //获取订单数量信息
-    
-    $response['data'] = ['member' => $member];
+    $order_unpay = $this->mysql->query("select count(id) as count from orders where member_id = ? and order_status =? ", [$member['id'], '待付款'], true);
+    $order_unsend = $this->mysql->query("select count(id) count from orders where member_id = ? and order_status =? ", [$member['id'], '待发货'], true);
+    $order_confirm = $this->mysql->query("select count(id) count from orders where member_id = ? and order_status =? ", [$member['id'], '待收货'], true);
+
+    $response['data'] = ['member' => $member, 'order_count' => ['unpay' => $order_unpay['count'], 'unsend' => $order_unsend['count'], 'confirm' => $order_confirm['count']]];
     return 0;
   }
 

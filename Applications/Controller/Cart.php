@@ -60,6 +60,9 @@ class Cart extends Base {
     $carts['payments'] = [
       [
         'id' => 1, 'type' => 'wxpay', 'title' => '微信支付', 'description' => '微信快捷支付', 'default' => true, 'promotion' => []
+      ],
+      [
+        'id' => 2, 'type' => 'alipay', 'title' => '支付宝', 'description' => '支付宝快捷支付', 'promotion' => []
       ]
     ];
 
@@ -92,7 +95,7 @@ class Cart extends Base {
     if(false === $ret) {
       return 1302;
     }
-    $consignee = $this->mysql->query("select id, member_id, consignee, provice, city, district, address, mobile, area_code from members_consignee where id =? and member_id = ?", [$consignee_id, $member['id']], true);
+    $consignee = $this->mysql->query("select id, member_id, consignee, province, city, district, address, mobile, area_code from members_consignee where id =? and member_id = ?", [$consignee_id, $member['id']], true);
     if(false === $consignee) {
       return 1103;
     }
@@ -239,7 +242,7 @@ class Cart extends Base {
     $orderConsigneeInsert = array();
     $orderConsigneeInsert['order_id'] = $order_id;
     $orderConsigneeInsert['consignee'] = $consignee['consignee'];
-    $orderConsigneeInsert['provice'] = $consignee['provice'];
+    $orderConsigneeInsert['province'] = $consignee['province'];
     $orderConsigneeInsert['city'] = $consignee['city'];
     $orderConsigneeInsert['district'] = $consignee['district'];
     $orderConsigneeInsert['address'] = $consignee['address'];

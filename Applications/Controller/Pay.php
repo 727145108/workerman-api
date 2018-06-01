@@ -34,7 +34,7 @@ class Pay extends Base {
     if(false === $order) {
       return 1401;
     }
-    if($order['order_status'] != '正常' || $order['pay_status'] != '待支付') {
+    if($order['order_status'] != '待付款') {
       return 1402;
     }
     switch ($order['pay_title']) {

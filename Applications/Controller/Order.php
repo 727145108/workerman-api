@@ -38,7 +38,7 @@ class Order extends Base {
     }
     $stmt = $this->mysql->build($where, 'and ');
     $offset = ($page - 1) * $limit;
-    $orders = $this->mysql->query("select id, order_sn, order_status, order_amount, shipping_amount, create_time from orders where {$stmt['sqlPrepare']}  limit ?, ?", array_merge($stmt['bindParams'], [$offset, $limit]));
+    $orders = $this->mysql->query("select id, order_sn, order_status, order_amount, shipping_amount, create_time from orders where {$stmt['sqlPrepare']} order by id desc limit ?, ? ", array_merge($stmt['bindParams'], [$offset, $limit]));
     if(false === $orders) {
       return -2;
     }
@@ -80,13 +80,43 @@ class Order extends Base {
       return 1401;
     }
     //订单收货人信息
-    $order_consignee = $this->mysql->query("select consignee, provice, city, district, address, mobile, area_code from orders_consignee where order_id = ?", [$order_id], true);
+    $order_consignee = $this->mysql->query("select consignee, province, city, district, address, mobile, area_code from orders_consignee where order_id = ?", [$order_id], true);
     if(false === $order_consignee) {
       return 1401;
     }
     //订单支付信息
     $order_pay = $this->mysql->query("select pay_type, pay_time, pay_money, pay_serial_number, prepay_id, prepay_code, prepay_id_time, out_trade_no from orders_pay where order_id = ?", [$order_id], true);
     $response['data'] = ['order' => $order, 'order_goods' => $order_goods, 'order_consignee' => $order_consignee, 'order_pay' => $order_pay];
+    return 0;
+  }
+
+  /**
+   * 获取订单物流信息
+   * @param  [type] $request  [description]
+   * @param  [type] $response [description]
+   * @return [type]           [description]
+   */
+  public function logistics($request, &$response) {
+    Helper::ValidateParams([
+      'token'     => '/^[a-zA-Z0-9|]{32}$/',
+      'order_id'     => '/^\d+$/'
+    ], $request, $response);
+    extract($request);
+    $member = $this->ValidateLogin($token);
+    if(false === $member) {
+      return 1100;
+    }
+    //订单信息
+    $order = $this->mysql->query("select id, order_sn, order_status, pay_status, send_status, refund_status, order_amount, good_amount, shipping_amount, tax_amount, coupon, coupon_amount, pay_title, realName, original_order_sn, create_time, update_time, send_time, confirm_time, over_time from orders where id = ? and member_id = ?", [$order_id, $member['id']], true);
+    if(false === $order) {
+      return 1401;
+    }
+    $logistics = $this->mysql->query("select order_id, com, title, invoice, is_check, data, addtime from orders_invoice where order_id = ?", [$order['id']], true);
+    if(false === $logistics) {
+      return 1404;
+    }
+    $logistics['data'] = json_decode($logistics['data']);
+    $response['data'] = ['order' => $order, 'logistics' => $logistics];
     return 0;
   }
 }

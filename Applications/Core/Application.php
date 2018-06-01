@@ -45,6 +45,7 @@ class Application extends Container  {
       $rsp['code'] = $ex->getCode();
       $rsp['desc'] = $ex->getMessage();
     }
+    Helper::logger('Run:', $rsp);
     $this->formatMessage($rsp);
   }
 
