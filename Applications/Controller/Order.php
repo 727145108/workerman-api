@@ -43,7 +43,7 @@ class Order extends Base {
       return -2;
     }
     foreach ($orders as $key => &$order) {
-      $order_goods = $this->mysql->query("select good_title, spec_sn, spec_title, good_pic, good_unit, good_price, order_price, good_total_price, buy_num, refund_num, refund_money, promotion, state from orders_good where order_id = ?", [$order['id']]);
+      $order_goods = $this->mysql->query("select good_title, spec_sn, spec_title, good_pic, good_unit, good_price, order_price, buy_num, refund_num, refund_money, promotion, state from orders_good where order_id = ?", [$order['id']]);
       if(false === $order_goods) {
         return -2;
       }
@@ -75,7 +75,7 @@ class Order extends Base {
       return 1401;
     }
     //订单商品信息
-    $order_goods = $this->mysql->query("select good_title, spec_sn, spec_title, good_pic, good_unit, good_price, order_price, good_total_price, buy_num, refund_num, refund_money, promotion, state from orders_good where order_id = ?", [$order_id]);
+    $order_goods = $this->mysql->query("select good_title, spec_sn, spec_title, good_pic, good_unit, good_price, order_price, buy_num, refund_num, refund_money, promotion, state from orders_good where order_id = ?", [$order_id]);
     if(false === $order_goods) {
       return 1401;
     }

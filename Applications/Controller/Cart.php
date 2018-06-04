@@ -216,7 +216,6 @@ class Cart extends Base {
       $orderGoodInsert['good_unit'] = '件';
       $orderGoodInsert['good_price'] = $good['price'];
       $orderGoodInsert['order_price'] = $good['price'];
-      $orderGoodInsert['good_total_price'] = $good['buy_num'] * $good['price'];
       $orderGoodInsert['buy_num'] = $good['buy_num'];
       $orderGoodInsert['promotion'] = '否';
       $stmt = $this->mysql->build($orderGoodInsert);
