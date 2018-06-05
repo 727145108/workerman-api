@@ -79,7 +79,11 @@ $worker->onWorkerStart = function($worker) {
       $req = $_POST;
     }
     $app->run($req, $rsp);
-    $connection->send(json_encode($rsp, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK));
+    if(isset($rsp['type']) && 'xml' === $rsp['type']) {
+      $connection->send($rsp['data']);
+    } else {
+      $connection->send(json_encode($rsp, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK));
+    }
   };
 
   $worker->onWorkerStop = function() {

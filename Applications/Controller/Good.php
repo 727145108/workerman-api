@@ -28,7 +28,7 @@ class Good extends Base {
     $where = array();
     $where['good_state'] = '正常';
     if(isset($q)) {
-      $where[''] = ['like', "%{$q}%"];
+      $where['good_title'] = ['like', "%{$q}%"];
     }
     $stmt = $this->mysql->build($where, 'and ');
     $offset = ($page - 1) * $limit;

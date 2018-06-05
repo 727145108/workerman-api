@@ -55,6 +55,7 @@ class Application extends Container  {
    */
   private function methodDispatch($req, &$rsp) {
     $request_uri = isset($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI']) : explode('?', '/index/index');
+    Helper::logger('methodDispatch', $request_uri);
     list(, $class, $method) = explode('/', $request_uri[0]);
 
     $controller = "\Crababy\Controller\\".ucfirst($class);
@@ -78,13 +79,17 @@ class Application extends Container  {
     Http::header("Access-Control-Allow-Origin:*");
     Http::header("Access-Control-Allow-Method: POST, GET");
     Http::header("Access-Control-Allow-Headers: Origin, X-CSRF-Token, X-Requested-With, Content-Type, Accept");
-    Http::header("Content-type: application/json;charset=utf-8");
-    $response['code'] = isset($response['code']) ? $response['code'] : 0;
-    if(isset($response['message'])) {
-      $response['desc'] = $response['message'];
-      unset($response['message']);
+    if(isset($response['type']) && 'xml' === $response['type']) {
+      Http::header("Content-type: text/html;charset=utf-8");
     } else {
-      $response['desc'] = isset($this['lang'][$this->language][$response['code']]) ? $this['lang'][$this->language][$response['code']] : "系统异常[{$response['code']}]";
+      Http::header("Content-type: application/json;charset=utf-8");
+      $response['code'] = isset($response['code']) ? $response['code'] : 0;
+      if(isset($response['message'])) {
+        $response['desc'] = $response['message'];
+        unset($response['message']);
+      } else {
+        $response['desc'] = isset($this['lang'][$this->language][$response['code']]) ? $this['lang'][$this->language][$response['code']] : "系统异常[{$response['code']}]";
+      }
     }
     //Helper::logger('Response Result:', $response);
     //Http::end(json_encode($response, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK));

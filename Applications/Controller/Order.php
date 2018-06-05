@@ -70,7 +70,7 @@ class Order extends Base {
       return 1100;
     }
     //订单信息
-    $order = $this->mysql->query("select id, order_sn, order_status, pay_status, send_status, refund_status, order_amount, good_amount, shipping_amount, tax_amount, coupon, coupon_amount, pay_title, realName, original_order_sn, create_time, update_time, send_time, confirm_time, over_time from orders where id = ? and member_id = ?", [$order_id, $member['id']], true);
+    $order = $this->mysql->query("select id, order_sn, order_status, pay_status, send_status, refund_status, order_amount, good_amount, shipping_amount, tax_amount, coupon, coupon_amount, pay_title, realName, original_order_sn, create_time, pay_time, send_time, confirm_time, over_time from orders where id = ? and member_id = ?", [$order_id, $member['id']], true);
     if(false === $order) {
       return 1401;
     }
@@ -85,7 +85,7 @@ class Order extends Base {
       return 1401;
     }
     //订单支付信息
-    $order_pay = $this->mysql->query("select pay_type, pay_time, pay_money, pay_serial_number, prepay_id, prepay_code, prepay_id_time, out_trade_no from orders_pay where order_id = ?", [$order_id], true);
+    $order_pay = $this->mysql->query("select pay_title, pay_time, pay_money, pay_serial_number, out_trade_no from orders_pay where out_trade_no = ?", [$order['order_sn']], true);
     $response['data'] = ['order' => $order, 'order_goods' => $order_goods, 'order_consignee' => $order_consignee, 'order_pay' => $order_pay];
     return 0;
   }
@@ -107,7 +107,7 @@ class Order extends Base {
       return 1100;
     }
     //订单信息
-    $order = $this->mysql->query("select id, order_sn, order_status, pay_status, send_status, refund_status, order_amount, good_amount, shipping_amount, tax_amount, coupon, coupon_amount, pay_title, realName, original_order_sn, create_time, update_time, send_time, confirm_time, over_time from orders where id = ? and member_id = ?", [$order_id, $member['id']], true);
+    $order = $this->mysql->query("select id, order_sn, order_status, pay_status, send_status, refund_status, order_amount, good_amount, shipping_amount, tax_amount, coupon, coupon_amount, pay_title, realName, original_order_sn, create_time, pay_time, send_time, confirm_time, over_time from orders where id = ? and member_id = ?", [$order_id, $member['id']], true);
     if(false === $order) {
       return 1401;
     }
