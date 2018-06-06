@@ -172,11 +172,14 @@ class Mysql {
   	}
   	$ret['sqlPrepare'] = array();
   	foreach ($fields as $k => $v) {
-  		if (is_array($v) || is_object($v)) {
-  			$v = json_encode($v, JSON_UNESCAPED_UNICODE);
-  		}
-  		$ret['sqlPrepare'][] = "{$k} = ? ";
-  		$ret['bindParams'][] = $v;
+  		if (is_array($v)) {
+        list($separ, $value) = $v;
+    		$ret['sqlPrepare'][] = "{$k} {$separ} ? ";
+    		$ret['bindParams'][] = $value;
+  		} else {
+    		$ret['sqlPrepare'][] = "{$k} = ? ";
+    		$ret['bindParams'][] = $v;
+      }
   	}
   	$ret['sqlPrepare'] = implode($separator, $ret['sqlPrepare']);
   	return $ret;
